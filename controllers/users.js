@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
-const UnauthorizedError = require('../errors/UnauthorizedError');
 const ConflictError = require('../errors/ConflictError');
 require('dotenv').config();
 
@@ -18,7 +17,7 @@ module.exports.createUser = (req, res, next) => {
       User.create({
         name, email, password: hashedPassword,
       })
-        .then((result) => res.send({ data: result }))
+        .then(() => res.send({ data: { name, email } }))
         .catch((err) => {
           if (err.name === 'ValidationError') {
             return next(new ValidationError('Переданы некорректные данные при создании пользователя'));
@@ -47,6 +46,8 @@ module.exports.patchUserInfo = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new ValidationError('Переданы некорректные данные при обновлении профиля'));
+      } if (err.code === 11000) {
+        return next(new ConflictError('Пользователь с таким email уже существует'));
       }
       return next(err);
     });
@@ -60,7 +61,7 @@ module.exports.login = (req, res, next) => {
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
       res.send({ token });
     })
-    .catch(() => next(new UnauthorizedError('Ошибка авторизации')));
+    .catch(next);
 };
 module.exports.getCurrentUser = (req, res, next) => {
   User.findOne({ _id: req.user._id })

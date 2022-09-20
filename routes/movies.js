@@ -9,9 +9,17 @@ router.post(
   '/',
   celebrate({
     body: Joi.object().keys({
-      name: Joi.string().required().min(2).max(30),
-      // eslint-disable-next-line no-useless-escape
-      link: Joi.string().required().pattern(URLregex, 'link'),
+      nameRU: Joi.string().required(),
+      nameEN: Joi.string().required(),
+      country: Joi.string().required(),
+      director: Joi.string().required(),
+      duration: Joi.string().required(),
+      year: Joi.string().required(),
+      description: Joi.string().required(),
+      image: Joi.string().required().pattern(URLregex, 'link'),
+      trailer: Joi.string().required().pattern(URLregex, 'link'),
+      thumbnail: Joi.string().required().pattern(URLregex, 'link'),
+      movieId: Joi.string().required().pattern(idRegex, 'id'),
     }),
   }),
   createMovie,
@@ -21,7 +29,7 @@ router.delete(
   '/:_id',
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string().required().pattern(idRegex, 'id'),
+      _id: Joi.string().required().hex(),
     }),
   }),
   deleteMovie,
