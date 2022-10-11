@@ -16,9 +16,9 @@ const { PORT = 3000, NODE_ENV, MONGODB_URI } = process.env;
 const app = express();
 
 app.use(bodyParser.json());
-// app.options('*', cors());
+app.options('*', cors());
 app.use(cors());
-// app.use(helmet());
+app.use(helmet());
 
 mongoose.connect(NODE_ENV === 'production' ? MONGODB_URI : 'mongodb://localhost:27017/moviesdb', {
   useNewUrlParser: true, /* ,
