@@ -17,7 +17,10 @@ module.exports.createUser = (req, res, next) => {
       User.create({
         name, email, password: hashedPassword,
       })
-        .then(() => res.send({ data: { name, email } }))
+        .then(() => {
+          res.header('Cross-Origin-Resource-Policy', 'cross-origin');
+          res.send({ data: { name, email } });
+        })
         .catch((err) => {
           if (err.name === 'ValidationError') {
             return next(new ValidationError('Переданы некорректные данные при создании пользователя'));
