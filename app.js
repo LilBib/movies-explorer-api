@@ -56,6 +56,7 @@ app.use('/movies', require('./routes/movies'));
 app.use('/', require('./routes/nonexistent'));
 
 app.use((req, res, next) => {
+  res.removeHeader('Cross-Origin-Resource-Policy');
   res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
   next();
 });
