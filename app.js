@@ -18,7 +18,7 @@ const app = express();
 app.use(bodyParser.json());
 app.options('*', cors());
 app.use(cors());
-// app.use(helmet());
+app.use(helmet());
 
 mongoose.connect(NODE_ENV === 'production' ? MONGODB_URI : 'mongodb://localhost:27017/moviesdb', {
   useNewUrlParser: true, /* ,
@@ -55,6 +55,10 @@ app.use('/users', require('./routes/users'));
 app.use('/movies', require('./routes/movies'));
 app.use('/', require('./routes/nonexistent'));
 
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+});
 app.use(errorLogger);
 app.use(errors());
 app.use(errorsHandler);
