@@ -18,6 +18,7 @@ module.exports.createUser = (req, res, next) => {
         name, email, password: hashedPassword,
       })
         .then(() => {
+          res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
           res.send({ data: { name, email } });
         })
         .catch((err) => {
